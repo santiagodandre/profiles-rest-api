@@ -35,9 +35,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     """ Database model for users in the system """
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    full_mame = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     # is_staff para determinar si es un usuario admin 
     is_staff = models.BooleanField(default=False)
+
+    #Comment
 
     # Specify the model manager . Required to use our custom User model. Needs a custom manager for the user model
     objects = UserProfileManager()
