@@ -14,19 +14,20 @@ class UserProfileManager(BaseUserManager):
             raise ValueError('User must have an email address')
         #Normalizar email 
         email = self.normalize_email(email)
-        user = self.model(email, name)
+        user = self.model(email=email, name=name)
         # Para asegurar que el password sea encriptado
         user.set_password(password)
         # Save the user model / Especificar la db es buena practica, no requerido
         user.save(using=self._db)     
         return user 
+
     def create_superuser(self, email, name, password):
         """ Create and save a new superuser  """
-        user = user.create_user(email, name, password)
+        user = self.create_user(email, name, password)
         # From PermissionsMixin
         user.is_superuser = True 
         user.is_staff = True
-        user.save(using=_db)
+        user.save(using=self._db)
         return user 
           
 
