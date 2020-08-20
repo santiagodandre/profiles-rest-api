@@ -7,6 +7,9 @@ from rest_framework import viewsets
 # Generate a random token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+# ObtainAuthToken & api_settings needed to create login api 
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from profiles_api import serializers
 from profiles_api import models
@@ -116,4 +119,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, )
     # Specify the search fields
     search_fields = ('name', 'email')
+    
+class UserLoginApiView(ObtainAuthToken):
+    """ Handle creating user authentication tokens """
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
     
