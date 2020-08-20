@@ -3,8 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 # List of HTTP state codes that can be used when returning responses 
 from rest_framework import status
-from profiles_api import serializers
 from rest_framework import viewsets
+# Generate a random token
+from rest_framework.authentication import TokenAuthentication
+
+from profiles_api import serializers
+from profiles_api import models
+from profiles_api import permissions
 
 # Create APIView Class
 
@@ -97,3 +102,15 @@ class HelloViewSet(viewsets.ViewSet):
         """ Handle removing an object """
         return Response({'http_method': 'DELETE'})
 
+# Usamos ModelViewset to handle models 
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """ Handle creating and updating profiles """
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    # Set how the user will uthenticate 
+    authentication_classes = (TokenAuthentication, )
+    # how the user gets permission to certain thing 
+    permission_classes = (permissions.UpdateOnwProfile,)
+
+ 
+    
