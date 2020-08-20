@@ -10,6 +10,7 @@ from rest_framework import filters
 # ObtainAuthToken & api_settings needed to create login api 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 from profiles_api import serializers
 from profiles_api import models
@@ -123,4 +124,24 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class UserLoginApiView(ObtainAuthToken):
     """ Handle creating user authentication tokens """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
-    
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """ Handle creating reading and updating profile feed items """
+    # Authenticate Requests 
+    authentication_classes = (TokenAuthentication, )
+    # Set serializer 
+    serializer_class = serializers.ProfileFeedItemSerializer
+    # Asign query set --> To manage all objects in our model 
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (
+        permissions.UpdateOwnStatus, 
+        IsAuthenticated,
+    )
+
+    # Se la llama cada vez que hago un HTTP Post a nuestra vista
+    # When a new object is created, django rest framework calls perform_create and passes the serializer
+    # The serializer is a ModelSerializer, so it has a save function to save the content of the serializar into de db 
+    # We override the save and pass a user_profile keyword
+    def perform_create(self, serializer):
+        """ Sets the user profile to the logged in user """
+        serializer.save(user_profile=self.request.user)
